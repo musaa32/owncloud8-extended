@@ -10,6 +10,7 @@ use OC\Cache\UserCache;
 use OC\Diagnostics\NullQueryLogger;
 use OC\Diagnostics\EventLogger;
 use OC\Diagnostics\QueryLogger;
+use OC\Mail\Mailer;
 use OC\Security\CertificateManager;
 use OC\Files\Node\Root;
 use OC\Files\View;
@@ -262,6 +263,9 @@ class Server extends SimpleContainer implements IServerContainer {
 		});
 		$this->registerService('TrustedDomainHelper', function ($c) {
 			return new TrustedDomainHelper($this->getConfig());
+		});
+		$this->registerService('Mailer', function(Server $c) {
+			return new Mailer($c->getConfig(), new \OC_Defaults());
 		});
 	}
 
@@ -705,6 +709,16 @@ class Server extends SimpleContainer implements IServerContainer {
 	 */
 	function getAppManager() {
 		return $this->query('AppManager');
+	}
+
+
+	/**
+	 * Creates a new mail message
+	 *
+	 * @return \OCP\Mail\IMailer
+	 */
+	function getMailer() {
+		return $this->query('Mailer');
 	}
 
 	/**

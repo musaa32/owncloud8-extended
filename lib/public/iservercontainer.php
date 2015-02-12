@@ -255,7 +255,7 @@ interface IServerContainer {
 	 * @return \OCP\ICertificateManager
 	 */
 	function getCertificateManager($user = null);
-	
+
 	/**
 	 * Create a new event source
 	 *
@@ -316,5 +316,12 @@ interface IServerContainer {
 	 *
 	 * @return \bantu\IniGetWrapper\IniGetWrapper
 	 */
-	 function getIniWrapper();
+	function getIniWrapper();
+
+	/**
+	 * Creates a new mail message
+	 *
+	 * @return \OCP\Mail\IMailer
+	 */
+	function getMailer();
 }
