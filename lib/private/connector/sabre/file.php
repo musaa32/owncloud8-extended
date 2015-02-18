@@ -64,17 +64,15 @@ class OC_Connector_Sabre_File extends OC_Connector_Sabre_Node implements \Sabre\
 			throw new \Sabre\DAV\Exception\ServiceUnavailable("Encryption is disabled");
 		}
 
-		$fileName = basename($this->info->getPath());
-		if (!\OCP\Util::isValidFileName($fileName)) {
-			throw new \Sabre\DAV\Exception\BadRequest();
-		}
+		// verify path of the target
+		$this->verifyPath();
 
 		// chunked handling
 		if (isset($_SERVER['HTTP_OC_CHUNKED'])) {
 			return $this->createFileChunked($data);
 		}
 
-		list($storage,) = $this->fileView->resolvePath($this->path);
+		list($storage) = $this->fileView->resolvePath($this->path);
 		$needsPartFile = $this->needsPartFile($storage) && (strlen($this->path) > 1);
 
 		if ($needsPartFile) {
@@ -355,5 +353,5 @@ class OC_Connector_Sabre_File extends OC_Connector_Sabre_Node implements \Sabre\
 		// and/or add method on Storage called "needsPartFile()"
 		return !$storage->instanceOfStorage('OCA\Files_Sharing\External\Storage') &&
 			!$storage->instanceOfStorage('OC\Files\Storage\OwnCloud');
-	}	
+	}
 }
