@@ -1505,6 +1505,11 @@ class View {
 		);
 	}
 
+	/**
+	 * @param string $path
+	 * @param string $fileName
+	 * @throws InvalidPathException
+	 */
 	public function verifyPath($path, $fileName) {
 
 		// verify empty and dot files

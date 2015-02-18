@@ -1,5 +1,6 @@
 <?php
 
+use OC\Connector\Sabre\Exception\InvalidPath;
 use Sabre\DAV\URLUtil;
 use OC\Connector\Sabre\TagList;
 
@@ -286,7 +287,7 @@ abstract class OC_Connector_Sabre_Node implements \Sabre\DAV\INode, \Sabre\DAV\I
 			$fileName = basename($this->info->getPath());
 			$this->fileView->verifyPath($this->path, $fileName);
 		} catch (\OCP\Files\InvalidPathException $ex) {
-			throw new OC_Connector_Sabre_Exception_InvalidPath($ex->getMessage());
+			throw new InvalidPath($ex->getMessage());
 		}
 	}
 }

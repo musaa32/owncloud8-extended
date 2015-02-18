@@ -8,6 +8,7 @@
 
 namespace OC\Connector\Sabre;
 
+use OC\Connector\Sabre\Exception\InvalidPath;
 use OC\Files\FileInfo;
 use OC\Files\Filesystem;
 use OC\Files\Mount\MoveableMount;
@@ -159,7 +160,7 @@ class ObjectTree extends \Sabre\DAV\ObjectTree {
 			try {
 				$this->fileView->verifyPath($destinationDir, $fileName);
 			} catch (\OCP\Files\InvalidPathException $ex) {
-				throw new OC_Connector_Sabre_Exception_InvalidPath($ex->getMessage());
+				throw new InvalidPath($ex->getMessage());
 			}
 
 			$renameOkay = $this->fileView->rename($sourcePath, $destinationPath);

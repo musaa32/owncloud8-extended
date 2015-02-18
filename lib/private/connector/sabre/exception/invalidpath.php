@@ -6,7 +6,11 @@
  * later.
  * See the COPYING-README file. */
 
-class OC_Connector_Sabre_Exception_InvalidPath extends \Sabre\DAV\Exception {
+namespace OC\Connector\Sabre\Exception;
+
+use OC_Connector_Sabre_FilesPlugin;
+
+class InvalidPath extends \Sabre\DAV\Exception {
 
 	/**
 	 * @var bool
