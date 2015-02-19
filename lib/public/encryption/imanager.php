@@ -21,52 +21,49 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace OCP\Encryption {
+namespace OCP\Encryption;
+
+/**
+ * This class provides access to files encryption apps.
+ *
+ */
+interface IManager {
 
 	/**
-	 * This class provides access to files encryption apps.
+	 * Check if encryption is available (at least one encryption module needs to be enabled)
 	 *
+	 * @return bool true if enabled, false if not
 	 */
-	interface IManager {
+	function isEnabled();
 
-		/**
-		 * Check if encryption is available (at least one encryption module needs to be enabled)
-		 *
-		 * @return bool true if enabled, false if not
-		 */
-		function isEnabled();
+	/**
+	 * Registers an address book
+	 *
+	 * @param \OCP\IEncryptionModule $module
+	 * @return void
+	 */
+	function registerEncryptionModule(\OCP\IEncryptionModule $module);
 
-		/**
-		 * Registers an address book
-		 *
-		 * @param \OCP\IEncryptionModule $module
-		 * @return void
-		 */
-		function registerEncryptionModule(\OCP\IEncryptionModule $module);
+	/**
+	 * Unregisters an address book
+	 *
+	 * @param \OCP\IEncryptionModule $module
+	 * @return void
+	 */
+	function unregisterEncryptionModule(\OCP\IEncryptionModule $module);
 
-		/**
-		 * Unregisters an address book
-		 *
-		 * @param \OCP\IEncryptionModule $module
-		 * @return void
-		 */
-		function unregisterEncryptionModule(\OCP\IEncryptionModule $module);
+	/**
+	 * get a list of all encryption modules
+	 *
+	 * @return array
+	 */
+	function getEncryptionModules();
 
-		/**
-		 * get a list of all encryption modules
-		 *
-		 * @return array
-		 */
-		function getEncryptionModules();
-
-		/**
-		 * get a specific encryption module
-		 *
-		 * @param string $module unique key of encryption module, if no module is defined we take the default module
-		 * @return \OCP\IEncryptionModule
-		 */
-		function getEncryptionModule($module = null);
-
-	}
-
+	/**
+	 * get a specific encryption module
+	 *
+	 * @param string $module unique key of encryption module, if no module is defined we take the default module
+	 * @return \OCP\IEncryptionModule
+	 */
+	function getEncryptionModule($module = null);
 }

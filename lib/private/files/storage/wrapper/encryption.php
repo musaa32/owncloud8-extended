@@ -25,14 +25,33 @@ namespace OC\Files\Storage\Wrapper;
 
 class Encryption extends Wrapper {
 
+	/** @var string */
 	private $mountPoint;
+
+	private $util;
+
+	/** @var \OCP\Encryption\IManager */
+	private $encryptionManager;
 
 	/**
 	 * @param array $parameters
 	 */
-	function __construct($parameters) {
+	function __construct($parameters, \OCP\Encryption\IManager $encryptionManager = null, $util = null) {
+
 		$this->mountPoint = $parameters['mountPoint'];
 		parent::__construct($parameters);
+
+		if ($util) {
+			$this->util = $util;
+		} else {
+			//TODO create new util class
+		}
+
+		if ($encryptionManager) {
+			$this->encryptionManager = $encryptionManager;
+		} else {
+			$this->encryptionManager = \OC::$server->getEncryptionManager();
+		}
 	}
 
 	/**
@@ -49,10 +68,7 @@ class Encryption extends Wrapper {
 		if ($fileInfo->getSize() > 0 && $fileInfo->isEncrypted()) {
 			$size = $fileInfo->getUnencryptedSize();
 			if ($size <= 0) {
-				$encryptionModuleId = $util->getEncryptionModuleId();
-				/* @var $encryptionManager \OC\Encryption\Manager */
-				$encryptionManager = \OC::$server->getEncryptionManager();
-				$encryptionModule = $encryptionManager->getEncryptionModule($encryptionModuleId);
+				$encryptionModule = $this->getEncryptionModule($fullPath);
 				$size = $encryptionModule->calculateUnencryptedSize($fullPath);
 				\OC\Files\Filesystem::putFileInfo($fullPath, array('unencrypted_size' => $size));
 			}
@@ -141,6 +157,17 @@ class Encryption extends Wrapper {
 	 */
 	protected function getFullPath($path) {
 		return Filesystem::normalizePath($this->mountPoint . '/' . $path);
+	}
+
+	/**
+	 * get encryption module needed to read/write the file located at $path
+	 *
+	 * @param string $path
+	 * @return \OCP\Encryption\IEncryptionModule
+	 */
+	protected function getEncryptionModule($path) {
+		$encryptionModuleId = $this->util->getEncryptionModuleId($path);
+		return $this->encryptionManager->getEncryptionModule($encryptionModuleId);
 	}
 
 }

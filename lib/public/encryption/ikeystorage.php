@@ -21,92 +21,89 @@
  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace OCP\Encryption {
+namespace OCP\Encryption;
 
-	interface IKeyStorage {
+interface IKeyStorage {
 
-		/**
-		 * get user specific key
-		 *
-		 * @param string $uid ID if the user for whom we want the key
-		 * @param string $keyid id of the key
-		 *
-		 * @return mixed key
-		 */
-		public function getUserKey($uid, $keyid);
+	/**
+	 * get user specific key
+	 *
+	 * @param string $uid ID if the user for whom we want the key
+	 * @param string $keyid id of the key
+	 *
+	 * @return mixed key
+	 */
+	public function getUserKey($uid, $keyid);
 
-		/**
-		 * get file specific key
-		 *
-		 * @param string $path path to file
-		 * @param string $keyid id of the key
-		 *
-		 * @return mixed key
-		 */
-		public function getFileKey($path, $keyid);
+	/**
+	 * get file specific key
+	 *
+	 * @param string $path path to file
+	 * @param string $keyid id of the key
+	 *
+	 * @return mixed key
+	 */
+	public function getFileKey($path, $keyid);
 
-		/**
-		 * get system-wide user specific key, e.g something like a key for public
-		 * link shares
-		 *
-		 * @param string $uid ID if the user for whom we want the key
-		 * @param string $keyid id of the key
-		 *
-		 * @return mixed key
-		 */
-		public function getSystemUserKey($uid, $keyid);
+	/**
+	 * get system-wide user specific key, e.g something like a key for public
+	 * link shares
+	 *
+	 * @param string $uid ID if the user for whom we want the key
+	 * @param string $keyid id of the key
+	 *
+	 * @return mixed key
+	 */
+	public function getSystemUserKey($uid, $keyid);
 
-		/**
-		 * get system-wide file keys, e.g. from a external storage mounted
-		 * by the admin for multiple users
-		 *
-		 * @param string $path path to file
-		 * @param string $keyid id of the key
-		 *
-		 * @return mixed key
-		 */
-		public function getSystemFileKey($path, $keyid);
+	/**
+	 * get system-wide file keys, e.g. from a external storage mounted
+	 * by the admin for multiple users
+	 *
+	 * @param string $path path to file
+	 * @param string $keyid id of the key
+	 *
+	 * @return mixed key
+	 */
+	public function getSystemFileKey($path, $keyid);
 
-		/**
-		 * set user specific key
-		 *
-		 * @param string $uid ID if the user for whom we want the key
-		 * @param string $keyid id of the key
-		 * @param mixed $key
-		 */
-		public function setUserKey($uid, $keyid, $key);
+	/**
+	 * set user specific key
+	 *
+	 * @param string $uid ID if the user for whom we want the key
+	 * @param string $keyid id of the key
+	 * @param mixed $key
+	 */
+	public function setUserKey($uid, $keyid, $key);
 
-		/**
-		 * set file specific key
-		 *
-		 * @param string $path path to file
-		 * @param string $keyid id of the key
-		 * @param mixed $key
-		 */
-		public function setFileKey($path, $keyid);
+	/**
+	 * set file specific key
+	 *
+	 * @param string $path path to file
+	 * @param string $keyid id of the key
+	 * @param mixed $key
+	 */
+	public function setFileKey($path, $keyid);
 
-		/**
-		 * set system-wide user specific key, e.g something like a key for public
-		 * link shares
-		 *
-		 * @param string $uid ID if the user for whom we want the key
-		 * @param string $keyid id of the key
-		 * @param mixed $key
-		 *
-		 * @return mixed key
-		 */
-		public function setSystemUserKey($uid, $keyid, $key);
+	/**
+	 * set system-wide user specific key, e.g something like a key for public
+	 * link shares
+	 *
+	 * @param string $uid ID if the user for whom we want the key
+	 * @param string $keyid id of the key
+	 * @param mixed $key
+	 *
+	 * @return mixed key
+	 */
+	public function setSystemUserKey($uid, $keyid, $key);
 
-		/**
-		 * set system-wide file keys, e.g. from a external storage mounted
-		 * by the admin for multiple users
-		 *
-		 * @param string $path path to file
-		 * @param string $keyid id of the key
-		 * @param mixed $key
-		 */
-		public function setSystemFileKey($path, $keyid);
-
-	}
-
+	/**
+	 * set system-wide file keys, e.g. from a external storage mounted
+	 * by the admin for multiple users
+	 *
+	 * @param string $path path to file
+	 * @param string $keyid id of the key
+	 * @param mixed $key
+	 */
+	public function setSystemFileKey($path, $keyid);
 }
