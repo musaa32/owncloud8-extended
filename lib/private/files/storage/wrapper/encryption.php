@@ -28,6 +28,7 @@ class Encryption extends Wrapper {
 	/** @var string */
 	private $mountPoint;
 
+	/** @var \OC\Encryption\Util */
 	private $util;
 
 	/** @var \OCP\Encryption\IManager */
@@ -35,23 +36,13 @@ class Encryption extends Wrapper {
 
 	/**
 	 * @param array $parameters
+	 * @param \OCP\Encryption\IManager $encryptionManager
 	 */
-	function __construct($parameters, \OCP\Encryption\IManager $encryptionManager = null, $util = null) {
-
+	function __construct($parameters, \OCP\Encryption\IManager $encryptionManager, \OC\Encryption\Util $util) {
 		$this->mountPoint = $parameters['mountPoint'];
+		$this->encryptionManager = $encryptionManager;
+		$this->util = $util;
 		parent::__construct($parameters);
-
-		if ($util) {
-			$this->util = $util;
-		} else {
-			//TODO create new util class
-		}
-
-		if ($encryptionManager) {
-			$this->encryptionManager = $encryptionManager;
-		} else {
-			$this->encryptionManager = \OC::$server->getEncryptionManager();
-		}
 	}
 
 	/**
@@ -63,14 +54,15 @@ class Encryption extends Wrapper {
 	 */
 	public function filesize($path) {
 		$fullPath = $this->getFullPath($path);
-		$fileInfo = \OC\Files\Filesystem::getFileInfo($fullPath);
-		$size = $fileInfo->getSize();
-		if ($fileInfo->getSize() > 0 && $fileInfo->isEncrypted()) {
-			$size = $fileInfo->getUnencryptedSize();
+
+		$info  = $this->getCache()->get($path);
+		$size = $info['size'];
+		if($size > 0 and $info['encrypted']) {
+			$size = $info['unencrypted_size'];
 			if ($size <= 0) {
-				$encryptionModule = $this->getEncryptionModule($fullPath);
+				$encryptionModule = $this->getEncryptionModule($path);
 				$size = $encryptionModule->calculateUnencryptedSize($fullPath);
-				\OC\Files\Filesystem::putFileInfo($fullPath, array('unencrypted_size' => $size));
+				$this->getCache()->update($info['id'], array('unencrypted_size' => $size));
 			}
 
 		}
@@ -166,7 +158,10 @@ class Encryption extends Wrapper {
 	 * @return \OCP\Encryption\IEncryptionModule
 	 */
 	protected function getEncryptionModule($path) {
-		$encryptionModuleId = $this->util->getEncryptionModuleId($path);
+		$handle = $this->storage->fopen($path, 'r');
+		$header = fread($handle, $this->util->getHeaderSize());
+		fclose($handle);
+		$encryptionModuleId = $this->util->getEncryptionModuleId($header);
 		return $this->encryptionManager->getEncryptionModule($encryptionModuleId);
 	}
 
