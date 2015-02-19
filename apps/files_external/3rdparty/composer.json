@@ -7,6 +7,7 @@
 	},
 	"require": {
 		"aws/aws-sdk-php": "2.7.5",
+		"league/flysystem": "1.0.1",
 		"icewind/smb": "dev-master",
 		"icewind/streams": "0.2"
 	}
