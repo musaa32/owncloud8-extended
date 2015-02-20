@@ -47,7 +47,7 @@ class Server extends SimpleContainer implements IServerContainer {
 		});
 
 		$this->registerService('EncryptionKeyStorage', function ($c) {
-			return new Encryption\KeyStorage();
+			return new Encryption\KeyStorage(new \OC\Files\View(), new \OC\Encryption\Util());
 		});
 
 		$this->registerService('Request', function (Server $c) {

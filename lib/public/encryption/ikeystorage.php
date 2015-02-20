@@ -57,17 +57,6 @@ interface IKeyStorage {
 	public function getSystemUserKey($uid, $keyid);
 
 	/**
-	 * get system-wide file keys, e.g. from a external storage mounted
-	 * by the admin for multiple users
-	 *
-	 * @param string $path path to file
-	 * @param string $keyid id of the key
-	 *
-	 * @return mixed key
-	 */
-	public function getSystemFileKey($path, $keyid);
-
-	/**
 	 * set user specific key
 	 *
 	 * @param string $uid ID if the user for whom we want the key
@@ -97,13 +86,4 @@ interface IKeyStorage {
 	 */
 	public function setSystemUserKey($uid, $keyid, $key);
 
-	/**
-	 * set system-wide file keys, e.g. from a external storage mounted
-	 * by the admin for multiple users
-	 *
-	 * @param string $path path to file
-	 * @param string $keyid id of the key
-	 * @param mixed $key
-	 */
-	public function setSystemFileKey($path, $keyid);
 }

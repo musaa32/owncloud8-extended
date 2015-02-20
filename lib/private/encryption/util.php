@@ -179,7 +179,7 @@ class Util {
 		return $this->blockSize;
 	}
 
-	protected function getUidAndFilename($filename) {
+	public function getUidAndFilename($filename) {
 		// TODO find a better implementation than in the current encyption app
 	}
 
@@ -189,7 +189,7 @@ class Util {
 	 * @return string File path without .part extension
 	 * @note this is needed for reusing keys
 	 */
-	protected function stripPartialFileExtension($path) {
+	public function stripPartialFileExtension($path) {
 		$extension = pathinfo($path, PATHINFO_EXTENSION);
 
 		if ( $extension === 'part') {
@@ -222,6 +222,26 @@ class Util {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * check if the file is stored on a system wide mount point
+	 * @param string $path relative to /data/user with leading '/'
+	 * @return boolean
+	 */
+	public function isSystemWideMountPoint($path) {
+		$normalizedPath = ltrim($path, '/');
+		if (\OCP\App::isEnabled("files_external")) {
+			$mounts = \OC_Mount_Config::getSystemMountPoints();
+			foreach ($mounts as $mount) {
+				if ($mount['mountpoint'] == substr($normalizedPath, 0, strlen($mount['mountpoint']))) {
+					if ($this->isMountPointApplicableToUser($mount)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }
