@@ -57,7 +57,7 @@ class Encryption extends Wrapper {
 
 		$info  = $this->getCache()->get($path);
 		$size = $info['size'];
-		if($size > 0 and $info['encrypted']) {
+		if($size > 0 && $info['encrypted']) {
 			$size = $info['unencrypted_size'];
 			if ($size <= 0) {
 				$encryptionModule = $this->getEncryptionModule($path);
@@ -77,8 +77,26 @@ class Encryption extends Wrapper {
 	 * @return string
 	 */
 	public function file_get_contents($path) {
-		// todo drecrypt data
-		return $this->storage->file_get_contents($path);
+
+		$data = null;
+		$encryptionModule = $this->getEncryptionModule($path);
+
+		if ($encryptionModule) {
+
+			$handle = $this->fopen($path, 'r');
+
+			if (is_resource($handle)) {
+				while (($plainDataChunk = fgets($handle, $this->util->getBlockSize())) !== false) {
+					$data .= $plainDataChunk;
+				}
+			}
+
+		} else {
+			$data = $this->storage->file_get_contents($path);
+		}
+
+		return $data;
+
 	}
 
 	/**
@@ -89,7 +107,46 @@ class Encryption extends Wrapper {
 	 * @return bool
 	 */
 	public function file_put_contents($path, $data) {
-		//todo encrypt data
+
+		$fullPath = $this->getFullPath($path);
+		$unencryptedSize = sizeof($data);
+
+		if ($this->storage->file_exists($path)) {
+			$encryptionModule = $this->getEncryptionModule($path);
+		} else {
+			$encryptionModule = $this->encryptionManager->getEncryptionModule();
+		}
+
+
+		if ($encryptionModule->shouldEncrypt($fullPath)) {
+
+			$headerData = $encryptionModule->begin($fullPath, $this->getHeader($path));
+			$encryptedData = $this->util->createHeader($headerData, $encryptionModule);
+			$accessList = $this->util->getSharingUsersArray($fullPath);
+
+			$blockSize = $this->util->getBlockSize();
+			$start = 0;
+			do {
+				$rawData = mb_strcut($data, $start, $blockSize);
+				$encryptedData .= $encryptionModule->encrypt($rawData, $accessList);
+				$start = $start + $blockSize;
+			} while ($rawData);
+
+			$remainingData = $encryptionModule->end($fullPath);
+			if ($remainingData) {
+				$encryptedData .= $remainingData;
+			}
+
+			$data = $encryptedData;
+		}
+
+		$info  = $this->getCache()->get($path);
+		if (isset($info['id'])) {
+			$this->getCache()->update($info['id'], array('unencrypted_size' => $unencryptedSize));
+		} else {
+			//TODO how to set unencrypted size for a new file, not yet indexed?
+		}
+
 		return $this->storage->file_put_contents($path, $data);
 	}
 
@@ -138,6 +195,7 @@ class Encryption extends Wrapper {
 	 * @return resource
 	 */
 	public function fopen($path, $mode) {
+		// todo call encryption stream wrapper
 		return $this->storage->fopen($path, $mode);
 	}
 
@@ -152,15 +210,27 @@ class Encryption extends Wrapper {
 	}
 
 	/**
-	 * get encryption module needed to read/write the file located at $path
+	 * read header from file
 	 *
 	 * @param string $path
-	 * @return \OCP\Encryption\IEncryptionModule
+	 * @return array
 	 */
-	protected function getEncryptionModule($path) {
+	protected function getHeader($path) {
 		$handle = $this->storage->fopen($path, 'r');
 		$header = fread($handle, $this->util->getHeaderSize());
 		fclose($handle);
+		return $this->util->readHeader($header);
+	}
+
+	/**
+	 * read encryption module needed to read/write the file located at $path
+	 *
+	 * @param string $path
+	 * @return \OCP\Encryption\IEncryptionModule|null
+	 */
+	protected function getEncryptionModule($path) {
+		$rawHeader = $this->getHeader($path);
+		$header = $this->util->readHeader($rawHeader);
 		$encryptionModuleId = $this->util->getEncryptionModuleId($header);
 		return $this->encryptionManager->getEncryptionModule($encryptionModuleId);
 	}

@@ -26,9 +26,9 @@ namespace OCP\Encryption;
 interface IEncryptionModule {
 
 	/**
-	 * @return string defining the technical unique key
+	 * @return string defining the technical unique id
 	 */
-	public function getKey();
+	public function getId();
 
 	/**
 	 * In comparison to getKey() this function returns a human readable (maybe translated) name
@@ -45,8 +45,9 @@ interface IEncryptionModule {
 	 * @param string $path to the file
 	 * @param array $header contains the header data read from the file
 	 *
-	 * $return array $header optional in case of a write operation the array
-	 *                       contain data which should be written to the header
+	 * $return array $header contain data as key-value pairs which should be
+	 *                       written to the header, in case of a read operation
+	 *                       or if no additional data is needed return a empty array
 	 */
 	public function begin($path, $header);
 
@@ -56,6 +57,8 @@ interface IEncryptionModule {
 	 * buffer.
 	 *
 	 * @param string $path to the file
+	 * @return string remained data which should be written to the file in case
+	 *                of a write operation
 	 */
 	public function end($path);
 
@@ -63,11 +66,10 @@ interface IEncryptionModule {
 	 * encrypt data
 	 *
 	 * @param string $data you want to encrypt
-	 * @param array $users list of users who should be able to access the file
-	 * @param array $groups list of groups which should be able to access the file
+	 * @param array $accessList who has access to the file contains the key 'users' and 'public'
 	 * @return mixed encrypted data
 	 */
-	public function encrypt($data, $users, $groups);
+	public function encrypt($data, $accessList);
 
 	/**
 	 * decrypt data
@@ -82,10 +84,10 @@ interface IEncryptionModule {
 	 * update encrypted file, e.g. give additional users access to the file
 	 *
 	 * @param string $path path to the file which should be updated
-	 * @param string $users list of user who should have access to the file
+	 * @param array $accessList who has access to the file contains the key 'users' and 'public'
 	 * @return boolean
 	 */
-	public function update($path, $users, $groups);
+	public function update($path, $accessList);
 
 	/**
 	 * should the file be encrypted or not
