@@ -8,6 +8,8 @@
 
 use Symfony\Component\Console\Application;
 
+define('OC_CONSOLE', 1);
+
 try {
 	require_once 'lib/base.php';
 
@@ -40,23 +42,23 @@ try {
 		}
 	}
 
-	// only load apps if no update is due,
-	// else only core commands will be available
-	if (!\OCP\Util::needUpgrade()) {
-		// load all apps to get all api routes properly setup
-		OC_App::loadApps();
-	}
-
 	$defaults = new OC_Defaults;
 	$application = new Application($defaults->getName(), \OC_Util::getVersionString());
 	require_once 'core/register_command.php';
-	if (!\OCP\Util::needUpgrade()) {
-		foreach(OC_App::getAllApps() as $app) {
-			$file = OC_App::getAppPath($app).'/appinfo/register_command.php';
-			if(file_exists($file)) {
-				require $file;
+	if (\OC::$server->getConfig()->getSystemValue('installed', false)) {
+		if (!\OCP\Util::needUpgrade()) {
+			OC_App::loadApps();
+			foreach (OC_App::getAllApps() as $app) {
+				$file = OC_App::getAppPath($app) . '/appinfo/register_command.php';
+				if (file_exists($file)) {
+					require $file;
+				}
 			}
+		} else {
+			echo "ownCloud or on of the apps require upgrade - only a limited number of commands is available" . PHP_EOL;
 		}
+	} else {
+		echo "ownCloud is not installed - only a limited number of commands is available" . PHP_EOL;
 	}
 	$application->run();
 } catch (Exception $ex) {
