@@ -55,10 +55,10 @@ try {
 				}
 			}
 		} else {
-			echo "ownCloud or on of the apps require upgrade - only a limited number of commands is available" . PHP_EOL;
+			echo "ownCloud or one of the apps require upgrade - only a limited number of commands are available" . PHP_EOL;
 		}
 	} else {
-		echo "ownCloud is not installed - only a limited number of commands is available" . PHP_EOL;
+		echo "ownCloud is not installed - only a limited number of commands are available" . PHP_EOL;
 	}
 	$application->run();
 } catch (Exception $ex) {

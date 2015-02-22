@@ -32,7 +32,7 @@ class Install extends Command {
 			->addOption('database-pass', null, InputOption::VALUE_REQUIRED, 'Password of the database user')
 			->addOption('database-table-prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for all tables', 'oc_')
 			->addOption('admin-user', null, InputOption::VALUE_REQUIRED, 'User name of the admin account', 'admin')
-			->addOption('admin-pass', null, InputOption::VALUE_REQUIRED, 'Password of the admin account - if no supplied out will be prompted')
+			->addOption('admin-pass', null, InputOption::VALUE_REQUIRED, 'Password of the admin account')
 			->addOption('data-dir', null, InputOption::VALUE_REQUIRED, 'Path to data directory', \OC::$SERVERROOT."/data");
 	}
 
