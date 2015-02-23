@@ -46,10 +46,9 @@ interface IKeyStorage {
 	public function getFileKey($path, $keyid);
 
 	/**
-	 * get system-wide user specific key, e.g something like a key for public
-	 * link shares
+	 * get system-wide encryption keys not related to a specific user,
+	 * e.g something like a key for public link shares
 	 *
-	 * @param string $uid ID if the user for whom we want the key
 	 * @param string $keyid id of the key
 	 *
 	 * @return mixed key
@@ -75,10 +74,9 @@ interface IKeyStorage {
 	public function setFileKey($path, $keyid);
 
 	/**
-	 * set system-wide user specific key, e.g something like a key for public
-	 * link shares
+	 * set system-wide encryption keys not related to a specific user,
+	 * e.g something like a key for public link shares
 	 *
-	 * @param string $uid ID if the user for whom we want the key
 	 * @param string $keyid id of the key
 	 * @param mixed $key
 	 *

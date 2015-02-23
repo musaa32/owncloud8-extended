@@ -74,16 +74,15 @@ class KeyStorage implements \OCP\Encryption\IKeyStorage {
 	}
 
 	/**
-	 * get system-wide user specific key, e.g something like a key for public
-	 * link shares
+	 * get system-wide encryption keys not related to a specific user,
+	 * e.g something like a key for public link shares
 	 *
-	 * @param string $uid ID if the user for whom we want the key
 	 * @param string $keyId id of the key
 	 *
 	 * @return mixed key
 	 */
-	public function getSystemUserKey($uid, $keyId) {
-		$path = '/' . self::$encryption_base_dir . '/' . $uid . '.' . $keyId;
+	public function getSystemUserKey($keyId) {
+		$path = '/' . self::$encryption_base_dir . '/' . $keyId;
 		return $this->getKey($path);
 	}
 
@@ -112,17 +111,16 @@ class KeyStorage implements \OCP\Encryption\IKeyStorage {
 	}
 
 	/**
-	 * set system-wide user specific key, e.g something like a key for public
-	 * link shares
+	 * set system-wide encryption keys not related to a specific user,
+	 * e.g something like a key for public link shares
 	 *
-	 * @param string $uid ID if the user for whom we want the key
 	 * @param string $keyId id of the key
 	 * @param mixed $key
 	 *
 	 * @return mixed key
 	 */
-	public function setSystemUserKey($uid, $keyId, $key) {
-		$path = '/' . self::$encryption_base_dir . '/' . $uid . '.' . $keyId;
+	public function setSystemUserKey($keyId, $key) {
+		$path = '/' . self::$encryption_base_dir . '/' . $keyId;
 		return $this->getKey($path, $key);
 	}
 
