@@ -86,17 +86,15 @@ class Encryption extends Wrapper {
 			$handle = $this->fopen($path, 'r');
 
 			if (is_resource($handle)) {
-				while (($plainDataChunk = fgets($handle, $this->util->getBlockSize())) !== false) {
-					$data .= $plainDataChunk;
+				while (!feof($handle)) {
+					$data .= fread($handle, $this->util->getBlockSize());
 				}
 			}
-
 		} else {
 			$data = $this->storage->file_get_contents($path);
 		}
 
 		return $data;
-
 	}
 
 	/**
@@ -107,47 +105,10 @@ class Encryption extends Wrapper {
 	 * @return bool
 	 */
 	public function file_put_contents($path, $data) {
-
-		$fullPath = $this->getFullPath($path);
-		$unencryptedSize = sizeof($data);
-
-		if ($this->storage->file_exists($path)) {
-			$encryptionModule = $this->getEncryptionModule($path);
-		} else {
-			$encryptionModule = $this->encryptionManager->getEncryptionModule();
-		}
-
-
-		if ($encryptionModule->shouldEncrypt($fullPath)) {
-
-			$headerData = $encryptionModule->begin($fullPath, $this->getHeader($path));
-			$encryptedData = $this->util->createHeader($headerData, $encryptionModule);
-			$accessList = $this->util->getSharingUsersArray($fullPath);
-
-			$blockSize = $this->util->getBlockSize();
-			$start = 0;
-			do {
-				$rawData = mb_strcut($data, $start, $blockSize);
-				$encryptedData .= $encryptionModule->encrypt($rawData, $accessList);
-				$start = $start + $blockSize;
-			} while ($rawData);
-
-			$remainingData = $encryptionModule->end($fullPath);
-			if ($remainingData) {
-				$encryptedData .= $remainingData;
-			}
-
-			$data = $encryptedData;
-		}
-
-		$info  = $this->getCache()->get($path);
-		if (isset($info['id'])) {
-			$this->getCache()->update($info['id'], array('unencrypted_size' => $unencryptedSize));
-		} else {
-			//TODO how to set unencrypted size for a new file, not yet indexed?
-		}
-
-		return $this->storage->file_put_contents($path, $data);
+		// file put content will always be translated to a stream write
+		$handle = $this->fopen($path, 'w');
+		fwrite($handle, $data);
+		return fclose($handle);
 	}
 
 	/**
