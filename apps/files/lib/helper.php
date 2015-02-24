@@ -225,4 +225,25 @@ class Helper {
 		}
 		return $files;
 	}
+	/**
+	 * check if deleting is disabled for the current user
+	 * @return boolean
+	 */
+	public static function isDeletingDisabledForUser() {
+		$val = \OC_Appconfig::getValue('core', 'delete', 'no');
+		if ($val !== 'no' && $val !== "") {
+			$user = \OCP\User::getUser();
+			$groupsList = \OC_Appconfig::getValue('core', 'delete', '');
+			$excludedGroups = explode(',', $groupsList);
+			$usersGroups = \OC_Group::getUserGroups($user);
+			
+			if (!empty($usersGroups)) {
+				$remainingGroups = array_intersect($usersGroups, $excludedGroups);
+				if (count($remainingGroups) < 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
