@@ -4,6 +4,12 @@ OCP\JSON::checkLoggedIn();
 OCP\JSON::callCheck();
 \OC::$server->getSession()->close();
 
+if(\OCA\Files\Helper::isDeletingDisabledForUser())
+{
+	$storageStats = \OCA\Files\Helper::buildFileStorageStatistics($dir);
+	OCP\JSON::error(array("data" => array_merge(array("message" => "You don't have the permission to delete files"), $storageStats)));
+	exit();
+}
 
 // Get data
 $dir = isset($_POST['dir']) ? (string)$_POST['dir'] : '';
