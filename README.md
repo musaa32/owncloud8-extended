@@ -6,7 +6,10 @@ owncloud version 8 with various extensions
 #### Files app
 - new permission for deleting files
 - file type restriction 
-![alt tag](http://www11.pic-upload.de/24.02.15/k539gnvffbyv.png)
+
+### Admin-panel
+![admin panel](http://www11.pic-upload.de/24.02.15/k539gnvffbyv.png)
+
 
 # ownCloud
 [ownCloud](http://ownCloud.org) gives you freedom and control over your own data.
