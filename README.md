@@ -1,4 +1,4 @@
-# ownCloud
+# ownCloud (with various extensions)
 
 [ownCloud](http://ownCloud.org) gives you freedom and control over your own data.
 A personal cloud which runs on your own server.
@@ -25,6 +25,11 @@ http://owncloud.org/contribute/
 ### Important notice on translations
 Please submit translations via Transifex:
 https://www.transifex.com/projects/p/owncloud/
+
+### Extensions
+- Files app
+- - new permission for deleting files
+
 
 [![Transifex](https://www.transifex.com/projects/p/owncloud/resource/core/chart/image_png)](https://www.transifex.com/projects/p/owncloud/)
 
