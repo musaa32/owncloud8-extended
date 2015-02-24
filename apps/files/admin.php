@@ -41,6 +41,14 @@ OCP\App::setActiveNavigationEntry( "files_administration" );
 $htaccessWritable=is_writable(OC::$SERVERROOT.'/.htaccess');
 
 $tmpl = new OCP\Template( 'files', 'admin' );
+/* 
+* extended version by musaa32
+* only users with permission can delete files(in the files app only)
+*/
+$deleteGroupsList = \OC_Appconfig::getValue('core', 'delete', '');
+$deleteGroupsList = explode(',', $deleteGroupsList); 
+$tmpl->assign('deleteGroupsList', implode('|', $deleteGroupsList));
+
 $tmpl->assign( 'uploadChangable', $htaccessWorking and $htaccessWritable );
 $tmpl->assign( 'uploadMaxFilesize', $maxUploadFilesize);
 // max possible makes only sense on a 32 bit system
