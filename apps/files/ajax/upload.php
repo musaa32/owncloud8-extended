@@ -112,6 +112,11 @@ if ($maxUploadFileSize >= 0 and $totalSize > $maxUploadFileSize) {
 	exit();
 }
 
+// file type restriction
+$filetyprestriction = \OC_Appconfig::getValue('core', 'filetyperes_enabled', 'no');
+$filetypes = \OC_Appconfig::getValue('core', 'allowed_filetypes', '');
+$allowed_types = explode(';', $filetypes);
+
 $result = array();
 if (strpos($dir, '..') === false) {
 	$fileCount = count($files['name']);
@@ -136,7 +141,26 @@ if (strpos($dir, '..') === false) {
 		} else {
 			$target = \OC\Files\Filesystem::normalizePath($dir . $relativePath.'/'.$files['name'][$i]);
 		}
-
+		
+		// file type restriction
+		if($filetyprestriction === 'yes')
+		{
+			$mimeType = OC_Helper::getMimetypeDetector()->detectPath($target);
+			$found = false;
+			while (list(, $value) = each($allowed_types)) {
+				if($mimeType == $value)
+				{
+					$found = true;
+					break;
+				}
+			}
+			
+			if(!$found)
+			{
+				$error = $l->t('Upload failed. File type('.$mimeType.') not allowed');
+				continue;
+			}
+		}
 		// relative dir to return to the client
 		if (isset($publicDirectory)) {
 			// path relative to the public root
