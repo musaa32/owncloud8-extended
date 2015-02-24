@@ -16,3 +16,11 @@
 	</form>
 
 <?php endif;?>
+	<-- Extension -->
+	<?php OCP\Util::addscript('files', 'extended'); ?>
+	<form name="extendedSettings" class="section" action="#" method="post">
+		<h2><?php p($l->t('File handling')); ?></h2>
+		<label for="delete">Users in this group <b>can delete</b>  files.</label><br />
+		<input name="delete" type="hidden" class="uploadGroups" value="<?php p($_['deleteGroupsList']) ?>" style="width: 400px"/><br />
+		<em>These groups will be able to delete files.</em>
+	</form>
