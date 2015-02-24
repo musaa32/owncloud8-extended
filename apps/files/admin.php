@@ -42,12 +42,18 @@ $htaccessWritable=is_writable(OC::$SERVERROOT.'/.htaccess');
 
 $tmpl = new OCP\Template( 'files', 'admin' );
 /* 
-* extended version by musaa32
-* only users with permission can delete files(in the files app only)
+* extended version
+* + only users with permission can delete files(in the files app only)
+* + file type restriction
 */
+$filetyprestriction = \OC_Appconfig::getValue('core', 'filetyperes_enabled', 'no');
+$allowed_types = \OC_Appconfig::getValue('core', 'allowed_filetypes', '');
 $deleteGroupsList = \OC_Appconfig::getValue('core', 'delete', '');
 $deleteGroupsList = explode(',', $deleteGroupsList); 
+
 $tmpl->assign('deleteGroupsList', implode('|', $deleteGroupsList));
+$tmpl->assign('fileTypeRes', $filetyprestriction);
+$tmpl->assign('allowed_filetypes', $allowed_types);
 
 $tmpl->assign( 'uploadChangable', $htaccessWorking and $htaccessWritable );
 $tmpl->assign( 'uploadMaxFilesize', $maxUploadFilesize);
