@@ -16,7 +16,7 @@
 	</form>
 
 <?php endif;?>
-	<-- Extension -->
+	<!-- Extension -->
 	<?php OCP\Util::addscript('files', 'extended'); ?>
 	<form name="extendedSettings" class="section" action="#" method="post">
 		<h2><?php p($l->t('File handling')); ?></h2>
