@@ -1,5 +1,14 @@
 # ownCloud (with various extensions)
 
+owncloud version 8 with various extensions
+
+### Extensions
+### Files app
+-- new permission for deleting files
+-- file type restriction 
+
+
+# ownCloud
 [ownCloud](http://ownCloud.org) gives you freedom and control over your own data.
 A personal cloud which runs on your own server.
 
@@ -30,8 +39,6 @@ https://www.transifex.com/projects/p/owncloud/
 
 For more detailed information about translations:
 http://doc.owncloud.org/server/8.0/developer_manual/core/translation.html
-### Extensions
-- Files app
--- new permission for deleting files
+
 
 
