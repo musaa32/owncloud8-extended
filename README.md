@@ -3,9 +3,9 @@
 owncloud version 8 with various extensions
 
 ### Extensions
-### Files app
--- new permission for deleting files
--- file type restriction 
+#### Files app
+- new permission for deleting files
+- file type restriction 
 
 
 # ownCloud
